@@ -1,4 +1,4 @@
-# 🚀 Fullstack Project (Vue + Node.js)
+# 🚀 RTECH Project (Vue + Node.js)
 
 Project ini terdiri dari:
 
@@ -50,4 +50,5 @@ Server running on http://localhost:3000
 
 Biasanya akan berjalan di:
 http://localhost:5173
+
 
