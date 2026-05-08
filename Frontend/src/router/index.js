@@ -29,7 +29,7 @@ const routes = [
   { path: "/course/:id", name: "CourseDetail", component: CourseDetail },
   { path: "/CourseCore/:id", name: "CourseCore", component: CourseCore },
   { path:"/validate", name:"Validate", component:Validate},
-  { path: "/login-Success", name: "LoginSuccess", component: LoginSucces },
+  { path: "/login-success", name: "LoginSuccess", component: LoginSucces },
   { path: "/reset-password/:id", name: "NewPassword", component: NewPassword }
 ];
 
