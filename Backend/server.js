@@ -17,6 +17,13 @@ app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(bodyParser.json());
 
 // =======================
+// ROOT API (Health Check)
+// =======================
+app.get("/", (req, res) => {
+  res.json({ status: "Backend R-Tech berjalan normal!", version: "1.0.0" });
+});
+
+// =======================
 // REGISTER API
 // =======================
 app.post("/api/register", async (req, res) => {
