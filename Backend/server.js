@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
@@ -9,8 +11,11 @@ const path = require('path');
 const db = new sqlite3.Database(path.join(__dirname, 'users.db'));
 
 
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
+
 const app = express();
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(bodyParser.json());
 app.use(session({ secret: "secret", resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
@@ -42,16 +47,24 @@ db.run(`
 // =======================
 // PASSPORT GOOGLE STRATEGY
 // =======================
-// at the top of server.js
-require('dotenv').config();
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  db.get("SELECT * FROM users WHERE id = ?", [id], (err, row) => {
+    done(err, row);
+  });
+});
 
 passport.use(new GoogleStrategy({
-  // clientID: "GOOGLE_CLIENT_ID",
-  // clientSecret: "GOOGLE_CLIENT_SECRET",
-  // callbackURL: "/api/auth/google/callback"
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: `${BACKEND_URL}/api/auth/google/callback`
 }, (accessToken, refreshToken, profile, done) => {
-
-  
+  const email = profile.emails[0].value;
+  const fullName = profile.displayName;
   let baseUsername = email.split("@")[0];
   
   // cek apakah username sudah ada, jika ada tambahkan angka
@@ -133,7 +146,7 @@ app.get("/api/auth/google/callback",
   (req, res) => {
     const user = req.user;
     const token = "dummy-token";
-    res.redirect(`http://localhost:5173/login-success?username=${user.username}&fullName=${user.fullName}&email=${user.email}&token=${token}`);
+    res.redirect(`${FRONTEND_URL}/login-success?username=${user.username}&fullName=${user.fullName}&email=${user.email}&token=${token}`);
   }
 );
 
