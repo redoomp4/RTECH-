@@ -11,16 +11,16 @@
            sm:pt-10"
   >
     <!-- TITLE -->
-    <section class="-mt-4"> <!-- naikkan dikit -->
+    <section class="mt-4 px-4">
       <h3
-        class="font-[Katibeh] text-[24px] md:text-[32px] sm:text-[20px] tracking-wide drop-shadow-md mb-2"
+        class="font-[Katibeh] text-3xl md:text-4xl lg:text-5xl tracking-wider drop-shadow-md mb-2 text-green-100"
       >
         Our Company
       </h3>
 
       <h1
-        class="font-[Katibeh] font-bold text-green-200 drop-shadow-md
-               text-[48px] md:text-[64px] sm:text-[36px] -mt-8"
+        class="font-[Katibeh] font-bold text-green-300 drop-shadow-lg
+               text-5xl md:text-6xl lg:text-7xl -mt-2 md:-mt-4"
       >
         Meet our people
       </h1>
