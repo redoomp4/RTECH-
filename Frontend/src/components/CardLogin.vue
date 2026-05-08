@@ -76,6 +76,7 @@
 <script>
 import axios from "axios";
 import { API_URL } from "@/config/api.js";
+import { supabase } from "@/config/supabase.js";
 
 export default {
   name: "CardLogin",
@@ -104,7 +105,7 @@ export default {
         const user = res.data.user;
 
         // Simpan user di localStorage
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+        localStorage.setItem("user", JSON.stringify(user));
 
         // Setup progress khusus per user
         if (!localStorage.getItem(`inProgressCourses_${user.username}`)) {
@@ -126,8 +127,17 @@ export default {
         this.loading = false;
       }
     },
-    redirectGoogle() {
-      window.location.href = `${API_URL}/api/auth/google`;
+    async redirectGoogle() {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/login-success`
+        }
+      });
+      if (error) {
+        alert("Terjadi kesalahan saat login Google");
+        console.error(error);
+      }
     },
   },
 };

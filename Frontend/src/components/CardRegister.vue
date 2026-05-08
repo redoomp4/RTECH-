@@ -59,6 +59,7 @@
 
 <script>
 import { API_URL } from "@/config/api.js";
+import { supabase } from "@/config/supabase.js";
 
 export default {
  data() {
@@ -90,16 +91,29 @@ methods: {
   .then(res => res.json())
   .then(data => {
     console.log("Register Response:", data);
-    alert(data.message || data.error);
-    if (data.message) window.location.href = "/login"; // redirect ke login
+    if (data.message) {
+      alert(data.message);
+      window.location.href = "/login"; // redirect ke login
+    } else {
+      alert(data.error || "Gagal register");
+    }
   })
   .catch(err => {
     console.error("Register Error:", err);
     alert("Gagal register, cek console untuk detail.");
   });
 },
-  redirectGoogle() {
-    window.location.href = `${API_URL}/api/auth/google`;
+  async redirectGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/login-success`
+      }
+    });
+    if (error) {
+      alert("Terjadi kesalahan saat register Google");
+      console.error(error);
+    }
   }
 }
 };
