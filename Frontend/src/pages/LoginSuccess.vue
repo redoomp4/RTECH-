@@ -1,20 +1,32 @@
 <script setup>
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { supabase } from "@/config/supabase.js";
 
 const router = useRouter();
 
-onMounted(() => {
-  const params = new URLSearchParams(window.location.search);
-  const username = params.get("username");
-  const email = params.get("email");
-  const fullName = params.get("fullName");
-  const token = params.get("token");
+onMounted(async () => {
+  // Supabase otomatis memproses token di URL fragment saat halaman ini dimuat
+  const { data: { session }, error } = await supabase.auth.getSession();
 
-  if (username) {
+  if (session && session.user) {
+    const user = session.user;
+    
+    // Ambil data Google dari user_metadata
+    const fullName = user.user_metadata?.full_name || "Google User";
+    const email = user.email;
+    const username = email.split("@")[0]; // Buat username sederhana seperti di backend lama
+    const token = session.access_token;
+
+    // Simpan persis sesuai logic asli kamu
     localStorage.setItem("user", JSON.stringify({ username, email, fullName }));
     localStorage.setItem("token", token);
+    
     router.replace("/"); // redirect ke homepage
+  } else {
+    // Jika gagal / tidak ada session
+    console.error("Session tidak ditemukan", error);
+    router.replace("/login");
   }
 });
 </script>
