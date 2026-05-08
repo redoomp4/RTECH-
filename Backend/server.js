@@ -1,227 +1,136 @@
 require('dotenv').config();
 
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const session = require("express-session");
-const path = require('path');
-const db = new sqlite3.Database(path.join(__dirname, 'users.db'));
-
+const { createClient } = require('@supabase/supabase-js');
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
+
+// Inisialisasi Supabase (Kredensial akan dimasukkan di Vercel/env)
+const supabaseUrl = process.env.SUPABASE_URL || 'https://xyz.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY || 'dummy_key';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const app = express();
 app.use(cors({ origin: FRONTEND_URL, credentials: true }));
 app.use(bodyParser.json());
-app.use(session({ secret: "secret", resave: false, saveUninitialized: false }));
-app.use(passport.initialize());
-app.use(passport.session());
-
-// =======================
-// DATABASE SETUP
-// =======================
-
-db.run(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    fullName TEXT,
-    email TEXT UNIQUE,
-    username TEXT UNIQUE,
-    password TEXT
-  )
-`);
-
-db.run(`
-  CREATE TABLE IF NOT EXISTS certificates (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    certificate_code TEXT,
-    username TEXT
-  )
-`);
-
-
-// =======================
-// PASSPORT GOOGLE STRATEGY
-// =======================
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  db.get("SELECT * FROM users WHERE id = ?", [id], (err, row) => {
-    done(err, row);
-  });
-});
-
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: `${BACKEND_URL}/api/auth/google/callback`
-}, (accessToken, refreshToken, profile, done) => {
-  const email = profile.emails[0].value;
-  const fullName = profile.displayName;
-  let baseUsername = email.split("@")[0];
-  
-  // cek apakah username sudah ada, jika ada tambahkan angka
-  function generateUniqueUsername(base, callback) {
-    db.get("SELECT * FROM users WHERE username = ?", [base], (err, row) => {
-      if (err) return callback(err);
-      if (!row) return callback(null, base);
-      // jika sudah ada, tambahkan random number
-      const newUsername = base + Math.floor(Math.random() * 1000);
-      generateUniqueUsername(newUsername, callback);
-    });
-  }
-
-  db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
-    if (err) return done(err);
-    if (row) return done(null, row); // user sudah ada
-
-    generateUniqueUsername(baseUsername, (err, uniqueUsername) => {
-      if (err) return done(err);
-
-      db.run(
-        "INSERT INTO users (email, username, fullName, password) VALUES (?, ?, ?, ?)",
-        [email, uniqueUsername, fullName, null],
-        function (err) {
-          if (err) return done(err);
-          db.get("SELECT * FROM users WHERE id = ?", [this.lastID], (err2, newUser) => {
-            return done(null, newUser);
-          });
-        }
-      );
-    });
-  });
-}));
 
 // =======================
 // REGISTER API
 // =======================
-app.post("/api/register", (req, res) => {
+app.post("/api/register", async (req, res) => {
   const { fullName, email, username, password } = req.body;
   if (!fullName || !email || !username || !password)
     return res.status(400).json({ error: "Semua field harus diisi" });
 
-  db.run(
-    "INSERT INTO users (fullName, email, username, password) VALUES (?, ?, ?, ?)",
-    [fullName, email, username, password],
-    function(err) {
-      if (err) return res.status(400).json({ error: "Email atau username sudah dipakai" });
-      res.json({ message: "Register berhasil" });
-    }
-  );
+  const { error } = await supabase
+    .from('users')
+    .insert([{ fullName, email, username, password }]);
+
+  if (error) {
+    console.error("Register Error:", error);
+    return res.status(400).json({ error: "Email atau username sudah dipakai" });
+  }
+
+  res.json({ message: "Register berhasil" });
 });
 
 // =======================
 // LOGIN API
 // =======================
-app.post("/api/login", (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
-  db.get("SELECT * FROM users WHERE username = ?", [username], (err, row) => {
-    if (err) return res.status(500).json({ error: "Server error" });
-    if (!row) return res.status(404).json({ error: "User belum terdaftar" });
-    if (row.password !== password) return res.status(400).json({ error: "Password salah" });
+  
+  const { data: user, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('username', username)
+    .single();
 
-    res.json({ 
-      message: "Login berhasil",
-      user: { username: row.username, fullName: row.fullName, email: row.email }
-    });
+  if (error || !user) return res.status(404).json({ error: "User belum terdaftar" });
+  if (user.password !== password) return res.status(400).json({ error: "Password salah" });
+
+  res.json({ 
+    message: "Login berhasil",
+    user: { username: user.username, fullName: user.fullName, email: user.email }
   });
 });
 
 // =======================
-// GOOGLE AUTH ROUTES
-// =======================
-app.get("/api/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-app.get("/api/auth/google/callback",
-  passport.authenticate("google", { session: false }),
-  (req, res) => {
-    const user = req.user;
-    const token = "dummy-token";
-    res.redirect(`${FRONTEND_URL}/login-success?username=${user.username}&fullName=${user.fullName}&email=${user.email}&token=${token}`);
-  }
-);
-
-// =======================
 // CERTIFICATE API
 // =======================
-app.post("/api/save-certificate", (req, res) => {
+app.post("/api/save-certificate", async (req, res) => {
   const { certificateNumber, username } = req.body;
 
   if (!certificateNumber || !username) {
     return res.status(400).json({ error: "certificateNumber & username required" });
   }
 
-  const sql = `INSERT INTO certificates (certificate_code, username) VALUES (?, ?)`;
+  const { data, error } = await supabase
+    .from('certificates')
+    .insert([{ certificate_code: certificateNumber, username }])
+    .select();
 
-  db.run(sql, [certificateNumber, username], function (err) {
-    if (err) {
-      console.error("DB Insert Error:", err);
-      return res.status(500).json({ error: "Database insert failed" });
-    }
+  if (error) {
+    console.error("DB Insert Error:", error);
+    return res.status(500).json({ error: "Database insert failed" });
+  }
 
-    res.json({ success: true, id: this.lastID });
-  });
+  res.json({ success: true, id: data[0].id });
 });
 
-// Tambahkan di server.js sebelum app.listen
-const query = `
-  SELECT * FROM certificates
-  WHERE certificate_code = ?
-  AND username = ?
-`;
-
-app.post("/api/validate-certificate", (req, res) => {
+app.post("/api/validate-certificate", async (req, res) => {
   const { certificate_code, username } = req.body;
   if (!certificate_code || !username) return res.status(400).json({ valid: false });
 
-  const query = `SELECT * FROM certificates WHERE certificate_code = ? AND username = ?`;
-  db.get(query, [certificate_code, username], (err, row) => {
-    if (err) return res.status(500).json({ valid: false });
-    if (!row) return res.json({ valid: false });
-    res.json({ valid: true, certificate: row });
-  });
+  const { data: row, error } = await supabase
+    .from('certificates')
+    .select('*')
+    .eq('certificate_code', certificate_code)
+    .eq('username', username)
+    .single();
+
+  if (error || !row) return res.json({ valid: false });
+  res.json({ valid: true, certificate: row });
 });
 
-app.post("/api/check-user", (req, res) => {
+// =======================
+// PASSWORD RESET API
+// =======================
+app.post("/api/check-user", async (req, res) => {
   const { email, username } = req.body;
   if (!email || !username) return res.status(400).json({ error: "Email & username required" });
 
-  db.get("SELECT * FROM users WHERE email = ? AND username = ?", [email, username], (err, row) => {
-    if (err) return res.status(500).json({ error: "DB error" });
-    if (!row) return res.status(404).json({ error: "User not found" });
+  const { data: user, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .eq('username', username)
+    .single();
 
-    res.json({ success: true, userId: row.id });
-  });
+  if (error || !user) return res.status(404).json({ error: "User not found" });
+
+  res.json({ success: true, userId: user.id });
 });
 
-app.post("/api/reset-password/:id", (req, res) => {
+app.post("/api/reset-password/:id", async (req, res) => {
   const userId = req.params.id;
   const { newPassword } = req.body;
 
   if (!newPassword) return res.status(400).json({ success: false, error: "Password baru diperlukan" });
 
-  const sql = "UPDATE users SET password = ? WHERE id = ?";
-  db.run(sql, [newPassword, userId], function(err) {
-    if (err) return res.status(500).json({ success: false, error: "Gagal update password" });
-    if (this.changes === 0) return res.status(404).json({ success: false, error: "User tidak ditemukan" });
-    res.json({ success: true });
-  });
+  const { data, error } = await supabase
+    .from('users')
+    .update({ password: newPassword })
+    .eq('id', userId);
+
+  if (error) return res.status(500).json({ success: false, error: "Gagal update password" });
+  
+  res.json({ success: true });
 });
 
-
-
-
 // =======================
-// START SERVER
+// EXPORT UNTUK VERCEL (Serverless)
 // =======================
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = app;
