@@ -41,7 +41,7 @@
                 transition-all cursor-pointer backdrop-blur-md shadow-sm
                 w-72">
       <div class="w-[120px] h-[120px] mx-auto flex items-center justify-center">
-        <img src="../assets/image/logo 10.png" class="w-full h-full object-contain" />
+        <img src="../assets/image/Logo 10.png" class="w-full h-full object-contain" />
       </div>
 
       <h3 class="text-xl font-semibold mt-3">Cyber Security</h3>
