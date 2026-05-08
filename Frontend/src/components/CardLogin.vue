@@ -115,7 +115,8 @@ export default {
           localStorage.setItem(`completedCourses_${user.username}`, JSON.stringify([]));
         }
 
-        this.$router.push("/"); // redirect ke home
+        // Gunakan window.location.href agar Navbar ter-refresh
+        window.location.href = "/";
       } catch (err) {
         // tangani error backend
         if (err.response && err.response.data && err.response.data.error) {

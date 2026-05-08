@@ -22,7 +22,8 @@ onMounted(async () => {
     localStorage.setItem("user", JSON.stringify({ username, email, fullName }));
     localStorage.setItem("token", token);
     
-    router.replace("/"); // redirect ke homepage
+    // Gunakan window.location.href agar halaman termuat ulang dan Navbar mendeteksi login
+    window.location.href = "/";
   } else {
     // Jika gagal / tidak ada session
     console.error("Session tidak ditemukan", error);
