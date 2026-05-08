@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { API_URL } from "@/config/api.js";
+
 export default {
  data() {
   return {
@@ -74,7 +76,7 @@ methods: {
     return alert("Password dan konfirmasi harus sama!");
   }
 
-  fetch("http://localhost:3000/api/register", {
+  fetch(`${API_URL}/api/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -97,7 +99,7 @@ methods: {
   });
 },
   redirectGoogle() {
-    window.location.href = "http://localhost:3000/api/auth/google";
+    window.location.href = `${API_URL}/api/auth/google`;
   }
 }
 };

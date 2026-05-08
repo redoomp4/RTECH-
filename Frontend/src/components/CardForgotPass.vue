@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { API_URL } from "@/config/api.js";
+
 export default {
   data() {
     return {
@@ -38,7 +40,7 @@ export default {
   methods: {
     async handleVerify() {
       try {
-        const res = await fetch("http://localhost:3000/api/check-user", {
+        const res = await fetch(`${API_URL}/api/check-user`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: this.email, username: this.username })

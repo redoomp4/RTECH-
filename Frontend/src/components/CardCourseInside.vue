@@ -46,6 +46,7 @@
 
 <script>
 import templateImg from "@/assets/image/certificate.png";
+import { API_URL } from "@/config/api.js";
 
 export default {
   name: "CardCourseInside",
@@ -167,7 +168,7 @@ export default {
   };
 
   // simpan ke DB
-  fetch("http://localhost:3000/api/save-certificate", {
+  fetch(`${API_URL}/api/save-certificate`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({

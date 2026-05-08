@@ -14,7 +14,8 @@ import Validate from "@/pages/Validate.vue";
 import LoginSucces from "@/pages/LoginSuccess.vue"
 import axios from "axios";
 import NewPassword from "@/pages/NewPassword.vue";
-axios.defaults.baseURL = "http://localhost:3000"; // Ganti dengan URL backend-mu
+import { API_URL } from "@/config/api.js";
+axios.defaults.baseURL = API_URL;
 
 const routes = [
   { path: "/", name: "Home", component: Home },

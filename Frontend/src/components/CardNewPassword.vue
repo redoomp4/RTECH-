@@ -66,6 +66,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import { API_URL } from "@/config/api.js";
 
 const route = useRoute();
 
@@ -88,7 +89,7 @@ const handleReset = async () => {
 
   try {
     const userId = route.params.id;
-    const res = await fetch(`http://localhost:3000/api/reset-password/${userId}`, {
+    const res = await fetch(`${API_URL}/api/reset-password/${userId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ newPassword: newPassword.value }),

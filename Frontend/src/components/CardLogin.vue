@@ -75,6 +75,7 @@
 
 <script>
 import axios from "axios";
+import { API_URL } from "@/config/api.js";
 
 export default {
   name: "CardLogin",
@@ -94,7 +95,7 @@ export default {
 
       this.loading = true;
       try {
-        const res = await axios.post("http://localhost:3000/api/login", {
+        const res = await axios.post(`${API_URL}/api/login`, {
           username: this.username,
           password: this.password
         });
@@ -126,7 +127,7 @@ export default {
       }
     },
     redirectGoogle() {
-      window.location.href = "http://localhost:3000/api/auth/google";
+      window.location.href = `${API_URL}/api/auth/google`;
     },
   },
 };

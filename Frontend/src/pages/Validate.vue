@@ -1,4 +1,4 @@
-    <template>
+      <template>
       <div class="bg-gradient-to-br from-white to-green-200 md:min-h-0 min-h-screen">
 
 
@@ -102,6 +102,7 @@ import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer.vue";
 import { ref } from "vue";
 import axios from "axios";
+import { API_URL } from "@/config/api.js";
 
 // FORM VALUE
 const certificateId = ref("");
@@ -119,7 +120,7 @@ async function validateCertificate() {
   showErrorBox.value = false;
 
   try {
-    const res = await axios.post("http://localhost:3000/api/validate-certificate", {
+    const res = await axios.post(`${API_URL}/api/validate-certificate`, {
       certificate_code: certificateId.value,
       username: username.value,
     });
