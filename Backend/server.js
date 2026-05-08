@@ -13,7 +13,7 @@ const supabaseKey = process.env.SUPABASE_KEY || 'dummy_key';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const app = express();
-app.use(cors({ origin: FRONTEND_URL, credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(bodyParser.json());
 
 // =======================
