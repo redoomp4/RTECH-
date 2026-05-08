@@ -52,6 +52,8 @@
   import Navbar from "@/components/Navbar.vue";
   import Footer from "@/components/Footer.vue";
   import CardCourseInside from "@/components/CardCourseInside.vue";
+  import bannerImg from "@/assets/image/Banner.jpg";
+  import banner2Img from "@/assets/image/Banner2.jpg";
 
   export default {
     name: "InsideCourse",
@@ -75,7 +77,7 @@
           rating: "4.0",
           students: 39,
           status: "open",
-          image: new URL("@/assets/image/banner.jpg", import.meta.url).href,
+          image: bannerImg,
           level: "Beginner",
           category: "SysAdmin",
           estimate: "3 hari",
@@ -88,7 +90,7 @@
           rating: "4.8",
           students: 120,
           status: "open",
-          image: new URL("@/assets/image/Banner2.jpg", import.meta.url).href,
+          image: banner2Img,
           level: "Beginner",
           category: "Cyber Security",
           estimate: "1 minggu",

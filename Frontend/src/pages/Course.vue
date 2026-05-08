@@ -84,6 +84,8 @@ import CourseCard from "@/components/CourseCard.vue";
 import Navbar from "@/components/Navbar.vue";
 import WidgetType from "@/components/WidgedType.vue";
 import Footer from "@/components/Footer.vue";
+import bannerImg from "@/assets/image/Banner.jpg";
+import banner2Img from "@/assets/image/Banner2.jpg";
 
 export default {
   name: "CoursePage",
@@ -97,7 +99,7 @@ export default {
       courses: [
         {
           id: 1,
-          image: new URL('@/assets/image/banner.jpg', import.meta.url).href,
+          image: bannerImg,
           rating: "4.8",
           reviews: "30",
           title: "Linux System Administration",
@@ -111,7 +113,7 @@ export default {
         },
         {
           id: 2,
-          image: new URL('@/assets/image/banner2.jpg', import.meta.url).href,
+          image: banner2Img,
           rating: "4.9",
           reviews: "100",
           title: "Cybersecurity Fundamentals",
