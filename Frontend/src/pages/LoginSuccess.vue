@@ -1,51 +1,51 @@
 <script setup>
-import { onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
+import { onMounted } from "vue";
 import { supabase } from "@/config/supabase.js";
 
-const router = useRouter();
-let authSubscription = null;
+onMounted(async () => {
+  // Karena detectSessionInUrl dimatikan, kita proses token dari URL secara manual
+  const hash = window.location.hash.substring(1); // hapus tanda #
+  const params = new URLSearchParams(hash);
 
-onMounted(() => {
-  // Gunakan onAuthStateChange — cara paling andal menangkap login OAuth
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' && session && session.user) {
-      const user = session.user;
+  const accessToken = params.get("access_token");
+  const refreshToken = params.get("refresh_token");
+
+  if (accessToken && refreshToken) {
+    // Set session secara manual — ini BYPASS pengecekan "120 detik stale"
+    const { data, error } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+
+    if (data?.session?.user) {
+      const user = data.session.user;
       const fullName = user.user_metadata?.full_name || "Google User";
       const email = user.email;
       const username = email.split("@")[0];
-      const token = session.access_token;
-
-      // Simpan ke localStorage persis seperti logic asli
-      localStorage.setItem("user", JSON.stringify({ username, email, fullName }));
-      localStorage.setItem("token", token);
-
-      // Redirect ke homepage dengan full page reload
-      window.location.href = "/";
-    }
-  });
-
-  authSubscription = subscription;
-
-  // Fallback: jika sudah ada session aktif (misalnya user refresh halaman ini)
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    if (session && session.user) {
-      const user = session.user;
-      const fullName = user.user_metadata?.full_name || "Google User";
-      const email = user.email;
-      const username = email.split("@")[0];
-      const token = session.access_token;
 
       localStorage.setItem("user", JSON.stringify({ username, email, fullName }));
-      localStorage.setItem("token", token);
+      localStorage.setItem("token", accessToken);
+      
       window.location.href = "/";
+      return;
+    } else {
+      console.error("Gagal set session:", error);
     }
-  });
-});
+  }
 
-onUnmounted(() => {
-  if (authSubscription) {
-    authSubscription.unsubscribe();
+  // Fallback: cek apakah sudah ada session aktif
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    const user = session.user;
+    const fullName = user.user_metadata?.full_name || "Google User";
+    const email = user.email;
+    const username = email.split("@")[0];
+
+    localStorage.setItem("user", JSON.stringify({ username, email, fullName }));
+    localStorage.setItem("token", session.access_token);
+    window.location.href = "/";
+  } else {
+    window.location.href = "/login";
   }
 });
 </script>
