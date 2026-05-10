@@ -33,7 +33,7 @@ const routes = [
   { path: "/reset-password/:id", name: "NewPassword", component: NewPassword }
 ];
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
   
@@ -41,3 +41,16 @@ export default createRouter({
     return { top: 0 };
   }
 });
+
+// Deteksi token OAuth di URL mana pun, lalu arahkan ke /login-success
+router.beforeEach((to, from, next) => {
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token') && to.name !== 'LoginSuccess') {
+    // Pindahkan ke /login-success sambil membawa hash token
+    window.location.href = '/login-success' + hash;
+    return;
+  }
+  next();
+});
+
+export default router;
