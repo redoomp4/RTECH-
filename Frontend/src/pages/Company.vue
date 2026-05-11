@@ -13,14 +13,14 @@
     <!-- TITLE -->
     <section class="mt-4 px-4">
       <h3
-        class="font-['Poppins'] font-black text-3xl md:text-4xl lg:text-5xl tracking-wider drop-shadow-md mb-2 text-green-100"
+        class="font-['Poppins'] font-bold text-3xl md:text-4xl lg:text-5xl tracking-wider drop-shadow-[0_5px_5px_rgba(0,0,0,0.6)] mb-2 text-green-100"
       >
-        Meet Our Company
+        Our Company
       </h3>
 
       <h1
-        class="font-['Poppins'] font-black text-green-300 drop-shadow-lg
-               text-5xl md:text-6xl lg:text-7xl -mt-2 md:-mt-4"
+        class="font-['Poppins'] font-bold text-green-300 drop-shadow-[0_8px_8px_rgba(0,0,0,0.7)]
+               text-5xl md:text-6xl lg:text-7xl -mt-3 md:-mt-2"
       >
         Meet our people
       </h1>
