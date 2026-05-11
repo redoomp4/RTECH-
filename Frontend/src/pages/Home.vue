@@ -31,7 +31,7 @@
       <!-- HERO TEXT -->
       <h1 
         class="
-          font-bold text-white leading-tight
+          font-black text-white leading-tight
 
           text-[30px]       
           md:text-[60px]     

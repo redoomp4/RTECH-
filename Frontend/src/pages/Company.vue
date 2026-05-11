@@ -13,13 +13,13 @@
     <!-- TITLE -->
     <section class="mt-4 px-4">
       <h3
-        class="font-[Katibeh] text-3xl md:text-4xl lg:text-5xl tracking-wider drop-shadow-md mb-2 text-green-100"
+        class="font-['Poppins'] font-black text-3xl md:text-4xl lg:text-5xl tracking-wider drop-shadow-md mb-2 text-green-100"
       >
-        Our Company
+        Meet Our Company
       </h3>
 
       <h1
-        class="font-[Katibeh] font-bold text-green-300 drop-shadow-lg
+        class="font-['Poppins'] font-black text-green-300 drop-shadow-lg
                text-5xl md:text-6xl lg:text-7xl -mt-2 md:-mt-4"
       >
         Meet our people
