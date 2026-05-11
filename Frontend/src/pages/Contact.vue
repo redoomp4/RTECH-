@@ -13,17 +13,17 @@
       <!-- LEFT TEXT -->
       <div class="lg:w-[45%] text-center lg:text-left">
         <h3
-          class="text-[30px] font-normal font-[Katibeh]
+          class="text-[30px] font-black font-['Poppins']
                  mb-[-10px] drop-shadow-[2px_2px_4px_rgba(0,0,0,0.5)]"
         >
           Contact Us
         </h3>
 
         <h1
-          class="text-[60px] font-semibold font-[Katibeh] text-green-200
+          class="text-[60px] font-black font-['Poppins'] text-green-200
                  drop-shadow-[2px_2px_4px_rgba(255,255,255,0.5)] leading-none"
         >
-          Get better care
+          Get Better Care
         </h1>
 
         <p class="text-[17px] leading-relaxed mt-4 text-justify">
