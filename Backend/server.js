@@ -7,9 +7,9 @@ const { createClient } = require('@supabase/supabase-js');
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
-// Inisialisasi Supabase (Kredensial akan dimasukkan di Vercel/env)
-const supabaseUrl = process.env.SUPABASE_URL || 'https://xyz.supabase.co';
-const supabaseKey = process.env.SUPABASE_KEY || 'dummy_key';
+// Inisialisasi Supabase
+const supabaseUrl = process.env.SUPABASE_URL || 'https://goboosguustacwoifkde.supabase.co';
+const supabaseKey = process.env.SUPABASE_KEY || 'sb_publishable_i7wfqBPcxF-HjgmyMkTYtQ_m3uKe7_Y';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const app = express();
@@ -136,6 +136,14 @@ app.post("/api/reset-password/:id", async (req, res) => {
   
   res.json({ success: true });
 });
+
+// =======================
+// START SERVER (untuk localhost)
+// =======================
+const PORT = process.env.PORT || 3000;
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
 
 // =======================
 // EXPORT UNTUK VERCEL (Serverless)
