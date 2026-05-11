@@ -31,11 +31,12 @@
       <!-- HERO TEXT -->
       <h1 
         class="
-          font-black text-white leading-tight
-
+          font-bold text-white leading-tight
+          font-['Poppins']
           text-[30px]       
           md:text-[60px]     
           sm:text-[45px]     
+          drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]
         "
       >
         WELCOME TO <br />
@@ -46,10 +47,12 @@
       <p 
         class="
           mt-3 text-white
-
-          text-[20px]      
-          md:text-[36px]    
-          sm:text-[20px]     
+          font-['Poppins']
+          font-medium
+          text-[16px]      
+          md:text-[26px]    
+          sm:text-[18px]     
+          drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]
         "
       >
         Technology Academy & Synchronizing the Cloudscape.
