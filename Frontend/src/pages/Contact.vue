@@ -26,7 +26,7 @@
           Get Better Care
         </h1>
 
-        <p class="text-[17px] leading-relaxed mt-4 text-justify">
+        <p class="text-[17px] leading-relaxed mt-4 text-justify font-['Poppins'] font-semibold drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
           Gratitude to the Network Engineers, Cloud Computing Experts, and
           System Security Guardians for your dedication in building secure
           digital systems and protecting data.
