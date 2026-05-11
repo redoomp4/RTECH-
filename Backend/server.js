@@ -33,7 +33,7 @@ app.post("/api/register", async (req, res) => {
 
   const { error } = await supabase
     .from('users')
-    .insert([{ fullName, email, username, password }]);
+    .insert([{ fullname: fullName, email, username, password }]);
 
   if (error) {
     console.error("Register Error:", error);
@@ -60,7 +60,7 @@ app.post("/api/login", async (req, res) => {
 
   res.json({ 
     message: "Login berhasil",
-    user: { username: user.username, fullName: user.fullName, email: user.email }
+    user: { username: user.username, fullName: user.fullname, email: user.email }
   });
 });
 
