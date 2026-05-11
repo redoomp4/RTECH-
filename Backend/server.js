@@ -91,15 +91,48 @@ app.post("/api/validate-certificate", async (req, res) => {
   const { certificate_code, username } = req.body;
   if (!certificate_code || !username) return res.status(400).json({ valid: false });
 
-  const { data: row, error } = await supabase
+  // Coba cari dengan username dulu
+  const { data: row } = await supabase
     .from('certificates')
     .select('*')
     .eq('certificate_code', certificate_code)
     .eq('username', username)
     .single();
 
-  if (error || !row) return res.json({ valid: false });
-  res.json({ valid: true, certificate: row });
+  if (row) return res.json({ valid: true, certificate: row });
+
+  // Jika gagal, cek apakah input adalah email — cari username dari tabel users
+  const { data: userByEmail } = await supabase
+    .from('users')
+    .select('username')
+    .eq('email', username)
+    .single();
+
+  if (userByEmail) {
+    // Coba validasi ulang dengan username yang ditemukan dari email
+    const { data: row2 } = await supabase
+      .from('certificates')
+      .select('*')
+      .eq('certificate_code', certificate_code)
+      .eq('username', userByEmail.username)
+      .single();
+
+    if (row2) return res.json({ valid: true, certificate: row2 });
+  }
+
+  // Cek apakah username yang diinput memang ada di database users
+  const { data: userExists } = await supabase
+    .from('users')
+    .select('email')
+    .eq('username', username)
+    .single();
+
+  if (!userExists) {
+    // Username tidak ditemukan di database, sarankan pakai email
+    return res.json({ valid: false, hint: "username_not_found" });
+  }
+
+  return res.json({ valid: false });
 });
 
 // =======================

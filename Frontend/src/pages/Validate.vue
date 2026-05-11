@@ -73,6 +73,21 @@
                 </div>
               </div>
 
+              <!-- HINT BOX (username tidak ditemukan) -->
+              <div
+                v-if="showHint"
+                class="bg-blue-100 border border-blue-300 p-4 md:p-5 rounded-xl 
+                      flex gap-4 items-start"
+              >
+                <span class="text-blue-700 text-xl">💡</span>
+                <div>
+                  <h3 class="font-semibold text-blue-800">Username Tidak Ditemukan!</h3>
+                  <p class="text-blue-800 text-sm">
+                    Username tersebut tidak terdaftar di sistem kami. Coba gunakan <strong>email</strong> yang terdaftar sebagai gantinya.
+                  </p>
+                </div>
+              </div>
+
               <!-- SUCCESS BOX -->
               <div
                 v-if="showSuccess"
@@ -111,6 +126,7 @@ const username = ref("");
 // STATUS BOX
 const showErrorBox = ref(false);
 const showSuccess = ref(false);
+const showHint = ref(false);
 
 // DATA RESULT (OPTIONAL)
 const certificateData = ref(null);
@@ -118,6 +134,7 @@ const certificateData = ref(null);
 async function validateCertificate() {
   showSuccess.value = false;
   showErrorBox.value = false;
+  showHint.value = false;
 
   try {
     const res = await axios.post(`${API_URL}/api/validate-certificate`, {
@@ -128,6 +145,8 @@ async function validateCertificate() {
     if (res.data.valid) {
       certificateData.value = res.data.certificate;
       showSuccess.value = true;
+    } else if (res.data.hint === "username_not_found") {
+      showHint.value = true;
     } else {
       showErrorBox.value = true;
     }
