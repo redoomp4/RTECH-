@@ -24,6 +24,7 @@
       <div class="w-[55%] max-[640px]:w-full">
         <h1
           class="
+          font-['Poppins']
             text-[40px] font-bold mb-5
             max-[1024px]:text-[34px]
             max-[640px]:text-[30px]

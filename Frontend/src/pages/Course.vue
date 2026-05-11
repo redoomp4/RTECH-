@@ -8,7 +8,7 @@
       <div class="flex flex-col md:flex-row md:items-center md:justify-between">
 
         <div>
-          <h1 class="text-4xl font-black">Course</h1>
+          <h1 class="font-['Poppins'] text-4xl font-bold">Course</h1>
           <p class="text-gray-600 mt-4 text-lg leading-relaxed">
             Semua course di Rtech akan membuat skill kamu <br>
             bertambah. Jadi lebih mahir sekarang!

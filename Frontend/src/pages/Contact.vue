@@ -13,14 +13,14 @@
       <!-- LEFT TEXT -->
       <div class="lg:w-[45%] text-center lg:text-left">
         <h3
-          class="text-[30px] font-black font-['Poppins']
-                 mb-[-10px] drop-shadow-[2px_2px_4px_rgba(0,0,0,0.5)]"
+          class="text-[30px] font-bold font-['Poppins']
+                 mb-[-5px] drop-shadow-[2px_2px_4px_rgba(0,0,0,0.5)]"
         >
           Contact Us
         </h3>
 
         <h1
-          class="text-[60px] font-black font-['Poppins'] text-green-200
+          class="text-[55px] font-bold font-['Poppins'] text-green-200
                  drop-shadow-[2px_2px_4px_rgba(255,255,255,0.5)] leading-none"
         >
           Get Better Care

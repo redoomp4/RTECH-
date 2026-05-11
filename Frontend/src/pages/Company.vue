@@ -20,7 +20,7 @@
 
       <h1
         class="font-['Poppins'] font-bold text-green-300 drop-shadow-[0_8px_8px_rgba(0,0,0,0.7)]
-               text-[50px] md:text-6xl lg:text-7xl -mt-3 md:mt-0 leading-tight"
+               text-[40px] md:text-6xl lg:text-7xl -mt-3 md:-mt-2 leading-tight"
       >
         Meet our people
       </h1>
